@@ -47,11 +47,108 @@
     mkfs.btrfs -L root /dev/mapper/archlinux
 8. Mounting & setting up the btrfs filesystem
     ```setup-btrfs
-    mount -t btrfs /dev/mapper/archlinux /mnt
+    1. Mounting
+        mount -t btrfs /dev/mapper/archlinux /mnt
+    2. Creating subvolumes
+        cd /mnt
+        btrfs subvolume create root /mnt
+        btrfs subvolume create root
+        btrfs subvolume create home
+        btrfs subvolume create swap
+        (Optional: For timeshift) btrfs create snapshots
+     3. Mounting subvolumes
+        cd /
+        umount -R /mnt
+        mkdir /mnt/home
+        mkdir /mnt/swap
+        (Optional: For timeshift) mkdir /mnt/snapshots
+        mount -t btrfs -o subvol=root /dev/mapper/archlinux /mnt
+        mount -t btrfs -o subvol=home /dev/mapper/archlinux /mnt/home
+        mount -t btrfs -o subvol=swap /dev/mapper/archlinux /mnt/swap
+        (Optional: For timeshift) mount -t btrfs -o subvol=snapshots /dev/mapper/archlinux /mnt/snapshots
+    ```
+9. Setting up GRUB
+    ``` grub
+    mkdir /mnt/boot
+    mkdir /mnt/boot/efi
+    mount /dev/( Disk Name ) /mnt/boot
+    mount /dev/( Disk Name ) /mnt/boot/efi ( If the file/folder dose not exist: mkdir /mnt/boot/efi and then mount it )
+    ```
+10. Setting up Swap
+    ``` swapfile
     cd /mnt
-    btrfs subvolume create root /mnt
-    btrfs subvolume create root
-    btrfs subvolume create home
-    btrfs subvolume create swap
-    (Optional: For timeshift) btrfs create snapshots
-    
+    touch /swap/swapfile
+    chattr +C /swap/swapfile
+    fallocate /swap/swapfile -l ( Swap size: Your ram size or otherwise. Examples: 1024M, 64M, 8G, )
+    mkswap /swap/swapfile
+    swapon /swap/swapfile
+    chmod 0600 /swap/swapfile
+    ```
+11. Install System
+    ```install-system
+    pacstrap -i /mnt base base-devel linux linux-firmware grub efibootmgr networkmanager sudo nano
+    ```
+12. Genfstab
+    ```genfstab
+    genfstab -U /mnt > /mnt/etc/fstab
+    ```
+13. Chroot
+    ```arch-chroot
+    arch-chroot /mnt
+    ```
+14. Root password
+    ```password
+    passwd
+    ```
+15. Locale
+    `(``locale
+    nano /etc/locale.gen ( Scroll until you get to your locale then uncomment it. Ctrl+o to save Ctrl+x to exit. )
+    locale-gen
+    echo LANG=( LANG ).UTF-8 ( Example: en_US.UTF-8 ) > /etc/locale.conf
+    ```
+16. Keyboard layout
+    ```keymap
+    echo KEYMAP=( Keyboard layout ) ( Example: us ) > /etc/vconsole.conf
+    ```
+17. Timezone
+    ```timezone
+    ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime
+    hwclock --systohc --utc
+    ```
+18. Hostname
+    ```hostname
+    echo ( Host name of choice ) > /etc/hostname
+    nano /etc/hosts ( 'Your IP' localhost.localdomain 'Your hostname of choice'. Ctrl+o to save Ctrl+x to exit. ) 
+    ```
+19. Grub encryption configuration
+    ```grub-encrypt-config
+    nano /etc/default/grub ( Scroll dowm to GRUB_CMDLINE_LINUX and inside the quotes type: cryptdevice=/dev/( Disk Name ):archlinux . Ctrl+o to save Ctrl+x to exit. )
+    ```
+20. Mkinitcpio configuration
+    ```mkinitcpio-config
+    nano /etc/mkinitcpio.conf ( Scroll down to HOOKS and after block type encrypt. Ctrl+o to save Ctrl+x to exit. )
+    mkinitcpio -p linux
+    ```
+21. Install and configure grub
+    ```grub-config
+    grub-install --boot-directory=/boot --efi-directory=/boot/efi /dev/( Disk Name )
+    grub-mkconfig -o /boot/grub/grub.cfg
+    grub-mkconfig -o /boot/efi/EFI/arch/grub.cfg
+    ```
+22. Exit & Reboot
+    ```exit-and-reboot
+    exit
+    reboot
+    ```
+23. Useradd
+    Once you login as root user with the password you set earlier type :
+    ```useradd
+    useradd -m -g users -G wheel -s /bin/bash ( Username of Choice )
+    passwd ( Username of Choice )
+    EDITOR=nano visudo ( Scroll down to %wheel All=(ALL) ALL and uncomment it. Ctrl+o to save Ctrl+x to exit. )
+    ```
+24. Exit
+    ```exit
+    Exit ( After exiting login with the user you created )
+    ```
+    NOT DONE YET
