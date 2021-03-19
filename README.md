@@ -1,7 +1,7 @@
 <h1 align="center">Installing Arch Linux with full-disk encryption</h1>
 <p align="center">
   <img src="https://img.shields.io/badge/MAINTAINED-YES-green?style=for-the-badge">
-  <img src="https://img.shields.io/badge/LICENSE-MIT-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/LICENSE-Apache_2.0-blue?style=for-the-badge">
   <img src="https://img.shields.io/github/issues/RDHCode/sunrise?style=for-the-badge">
 </p>
 
