@@ -2,7 +2,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/MAINTAINED-YES-green?style=for-the-badge">
   <img src="https://img.shields.io/badge/LICENSE-Apache_2.0-blue?style=for-the-badge">
-  <img src="https://img.shields.io/github/issues/RDHCode/sunrise?style=for-the-badge">
+  <img src="https://img.shields.io/github/issues/RDHCode/archlinux?style=for-the-badge">
 </p>
 
 <h5 align="center">"This is a guid on how to install arch linux with full disk encryption"</h1>
