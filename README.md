@@ -12,7 +12,7 @@
     ```loadkeys
     loadkeys ( keyboard layout )
     ```
-2. Connect to wifi ( Only if you use wifi on your system ) :
+2. Connect to wifi ( Only if you use wifi primarily on your system ) :
     ```iwctl
     station ( network interface ) connect ( SSID ) password ( password )
     ```
@@ -101,7 +101,7 @@
     passwd
     ```
 15. Locale
-    `(``locale
+    ```locale
     nano /etc/locale.gen ( Scroll until you get to your locale then uncomment it. Ctrl+o to save Ctrl+x to exit. )
     locale-gen
     echo LANG=( LANG ).UTF-8 ( Example: en_US.UTF-8 ) > /etc/locale.conf
@@ -151,4 +151,71 @@
     ```exit
     Exit ( After exiting login with the user you created )
     ```
-    NOT DONE YET
+25. Activate Network Connection
+    ```network
+    sudo systemctl enable NetworkManager
+    sudo systemctl start NetworkManager
+    (Optional: For wifi) nmcli device connect ( SSID ) password ( password )
+    ```
+26. Install X window system and audio
+    ```install-x-window-system-and-audio
+    pacman -S pulseaudio pulseaudio-alsa asla-utils xorg xorg-xinit xorg-server
+    ```
+27. Download a Desktop Environment or a Window Manager
+
+    __NOTE__: I would like to point out that I have not tested all these desktops. In particular, some Login Managers may not work with a given desktop. For the                            full list of Login Managers look at the [Arch Wiki](https://wiki.archlinux.org/index.php/Display_manager) and try the one you like.
+    ```de-or-wm
+    XFCE:
+        pacman -S xfce4 lightdm lightdm-gtk-greeter
+        echo "exec startxfce4" > ~/.xinitrc
+        systemctl enable lightdm
+    Gnome:
+        echo "exec gnome-session" > ~/.xinitrc
+        sudo pacman -S gnome
+    Cinnamon:
+        echo "exec cinnamon-session" > ~/.xinitrc
+        sudo pacman -S cinnamon mdm
+        systemctl enable mdm
+    Mate:
+       echo "exec mate-session" > ~/.xinitrc
+       sudo pacman -S mate lightdm lightdm-gtk-greeter
+       systemctl enable lightdm
+    Budgie:
+       echo "export XDG_CURRENT_DESKTOP=Budgie:GNOME" > ~/.xinitrc
+       echo "exec budgie-desktop" >> ~/.xinitrc
+       sudo pacman -S budgie-desktop lightdm lightdm-gtk-greeter
+       systemctl enable lightdm
+    Openbox:
+       echo "exec openbox-session" > ~/.xinitrc
+       sudo pacman -S openbox lightdm lightdm-gtk-greeter
+       systemctl enable lightdm
+    i3:
+       echo "exec i3"  > ~/.xinitrc
+       pacman -S i3 rxvt-unicode dmenu lightdm
+       systemctl enable lightdm
+    Awesome:
+       echo "exec awesome"  > ~/.xinitrc
+       sudo pacman -S awesome lightdm
+       systemctl enable lightdm
+    Deepin:
+       echo "exec startdde"  > ~/.xinitrc
+       sudo pacman -S deepin lightdm
+       systemctl enable lightdm
+
+       Also, edit the file /etc/lightdm/lightdm.conf to have this line:
+
+       greeter-session=lightdm-deepin-greeter
+    LXDE:
+       echo "exec startlxde"  > ~/.xinitrc
+       sudo pacman -S lxdm-gtk3 lxdm
+    ```
+28. Reboot & Enjoy
+     ```   
+     reboot
+    ```
+____
+I hope you enjoyed the guid I made though if you have had any isssues with my guid please submit it in them 
+[issues](https://github.com/RDHCode/archlinux/issues) section.
+
+
+
